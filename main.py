@@ -4,25 +4,43 @@ import os
 import re
 
 def parse_document(document):
-    tokens = []
-    # print(document)
-    for word in document.split():
-        # print(word + '\n')
-        word = word.lower()
-        word = re.sub(r'\W+', ' ', word)
-        word = re.sub(r'\d+', ' ', word)
-        word = re.sub(r'\s+', ' ', word)
+    document = re.sub(r'\W+', ' ', document)
+    document = re.sub(r'\d+', ' ', document)
+    document = re.sub(r'\s+', ' ', document)
 
-        tokens.append(word)
+    document = document.lower()
+    document = document.split()
+
+    tokens = {}
+
+    for word in document:
+        if word not in tokens:
+            tokens[word] = 1
+        else:
+            tokens[word] += 1
 
     return tokens
 
+def parse_documents(direct):
+    files = os.listdir(direct)
+    for file in files:
+        if file.endswith('.txt'):
+            file_d = open("{}/{}".format(direct, file), 'r', encoding='utf8')
+            document = file_d.read()
+            words = parse_document(document)
 
 def main():
     # parse_document('data/DR/OR_Coos_2008-04-03__08003320.txt')
-    my_str = 'Tnvnswp {:5 Q., Qmggv I5 VI/ gQ Wlllmvtgllgg Merlmégyi 2 6002; Co1Am0j,0l\"¤€q0rx/ .    Assessor’s Tax Parcel ID Number:   · O 0 ‘   The County Auditor vwll rely on the information provided on    this form. The Staff will not-read the document to verily the `     Accuracy or completeness of the indexing'
-    words = parse_document(my_str)
-    print(words)
+    # my_str = 'Tnvnswp {:5 Q., Qmggv I5 VI/ gQ Wlllmvtgllgg Merlmégyi 2 6002; Co1Am0j,0l\"¤€q0rx/ .    Assessor’s Tax Parcel ID Number:   · O 0 ‘   The County Auditor vwll rely on the information provided on    this form. The Staff will not-read the document to verily the `     Accuracy or completeness of the indexing'
+
+    # words = parse_document(my_str)
+
+    parse_documents('data/DR')
+    parse_documents('data/DT')
+    parse_documents('data/L')
+
+    # print(words)
+    print("Success!")
 
 if __name__ == '__main__':
     main()
