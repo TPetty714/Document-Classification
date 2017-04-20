@@ -2,21 +2,6 @@ import os
 import re
 
 
-def test_results_match(results):
-    """This function takes a dictionary as an argument, which has a file name mapped to its proposed classification. It will open up the test results file and compare it to the dictionary, line by line. It returns a boolean indicating whether or not the classifications match the test results file."""
-
-    test_results = open('../data/test-results.txt', 'r')
-    actual = test_results.read()
-    actual = actual.split('\n')
-
-    if results == actual:
-        test_results.close()
-        return True
-    else:
-        test_results.close()
-        return False
-
-
 def create_bag_of_words(document):
     """This function takes a preprocessed document as an argument and proceeds to create a dictionary, mapping each term to its frequency in the document. It returns a dictionary."""
     document = document.split()

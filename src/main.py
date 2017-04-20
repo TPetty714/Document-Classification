@@ -2,7 +2,7 @@
 
 from strategies import *
 from parser import *
-
+from test import *
 
 def main():
     # my_str = 'Tnvnswp {:5 Q., Qmggv I5 VI/ gQ Wlllmvtgllgg Merlmégyi 2 6002; Co1Am0j,0l\"¤€q0rx/ .    Assessor’s Tax Parcel ID Number:   · O 0 ‘   The County Auditor vwll rely on the information provided on    this form. The Staff will not-read the document to verily the `     Accuracy or completeness of the indexing'
@@ -21,10 +21,7 @@ def main():
     # for document in documents:
     #     print(document, documents[document])
 
-    if test_results_match(classify_with_intelli_grep(documents)):
-        print('Success!')
-    else:
-        print('Failure!')
+    test_initial_strategies(documents)
 
 if __name__ == '__main__':
     main()
