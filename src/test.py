@@ -2,6 +2,7 @@ import os
 
 from strategies import *
 
+
 def test_intelligrep(documents):
     print('Now testing intelli-grep...')
     if test_results_match(classify_with_intelligrep(documents)):
