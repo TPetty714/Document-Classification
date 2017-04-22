@@ -13,16 +13,19 @@ def main():
     # tokens = create_bag_of_words(words)
     # print(tokens)
 
-    documents = {}
+    # documents = {}
 
-    documents.update(parse_documents_from_directory('../data/DR'))
-    documents.update(parse_documents_from_directory('../data/DT'))
-    documents.update(parse_documents_from_directory('../data/L'))
+    # documents.update(parse_documents_from_directory('../data/DR'))
+    # documents.update(parse_documents_from_directory('../data/DT'))
+    # documents.update(parse_documents_from_directory('../data/L'))
+
+    documents = parse_documents_from_directory('../data/TEST')
 
     # for document in documents:
     #     print(document, documents[document])
 
     test_initial_strategies(documents)
+
 
 if __name__ == '__main__':
     main()
