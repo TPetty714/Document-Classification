@@ -1,30 +1,49 @@
 #!/usr/bin/env python
 
+import sys
+
 from strategies import *
 from parser import *
 from test import *
 
 
+def display_help():
+    print('\nIncorrect usage!\n')
+    print('Type \'python3 main.py \'training_dir_1\' \'training_dir_2\' \'training_dir_3\' \'testing_file\'\n')
+    print('Where training_dir represents a directory to train the algorithms')
+    print('and testing_dir represents a directory to test the algorithms\n')
+
+
 def main():
-    # my_str = 'Tnvnswp {:5 Q., Qmggv I5 VI/ gQ Wlllmvtgllgg Merlmégyi 2 6002; Co1Am0j,0l\"¤€q0rx/ .    Assessor’s Tax Parcel ID Number:   · O 0 ‘   The County Auditor vwll rely on the information provided on    this form. The Staff will not-read the document to verily the `     Accuracy or completeness of the indexing'
+    if len(sys.argv) != 5:
+        display_help()
+        sys.exit()
 
-    # words = preprocess(my_str)
-    # print(words)
-    # tokens = create_bag_of_words(words)
-    # print(tokens)
+    # d = os.listdir(sys.argv[1])
+    # for file in d:
+    #     if file.endswith('txt'):
+    #         th = open('{}/{}'.format(sys.argv[1], file), 'r')
+    #         th.close()
+    # d = os.listdir(sys.argv[2])
+    # for file in d:
+    #     if file.endswith('txt'):
+    #         th = open('{}/{}'.format(sys.argv[2], file), 'r')
+    #         th.close()
+    # d = os.listdir(sys.argv[3])
+    # for file in d:
+    #     if file.endswith('txt'):
+    #         th = open('{}/{}'.format(sys.argv[3], file), 'r')
+    #         th.close()
+    # file = open(sys.argv[4])
+    # file.close()
 
-    # documents = {}
+    # actual = parse_actual_results('../data/test-results.txt')
 
-    # documents.update(parse_documents_from_directory('../data/DR'))
-    # documents.update(parse_documents_from_directory('../data/DT'))
-    # documents.update(parse_documents_from_directory('../data/L'))
+    # test_results = parse_documents_from_directory('../data/TEST')
+    # expected = classify_with_intelligrep(test_results)
 
-    documents = parse_documents_from_directory('../data/TEST')
 
-    # for document in documents:
-    #     print(document, documents[document])
-
-    test_initial_strategies(documents)
+    # test_intelligrep(actual, expected)
 
 
 if __name__ == '__main__':

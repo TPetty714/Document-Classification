@@ -40,3 +40,19 @@ def parse_documents_from_directory(direct):
             file_d.close()
 
     return preprocessed_documents
+
+
+def parse_actual_results(actual_test_results):
+    test_results_file = open(actual_test_results, 'r')
+    test_contents = test_results_file.read()
+    test_contents = test_contents.splitlines()
+
+    actual = {}
+
+    for line in test_contents:
+        elements = tuple(line.split(','))
+        actual[elements[0]] = elements[1]
+
+    test_results_file.close()
+
+    return actual
