@@ -10,7 +10,7 @@ determine the best scenarios for each strategy. Our writeup will lay out the det
 
 How to build/run:
 
-Type "python3 main.py 'training_dir_1' 'training_dir_2' 'training_dir_3' 'testing_file'" (Note: The single quotes are optional)
-Where each 'training_dir' represents a relative path to a directory used for training the algorithms and 'testing_file' represents a relative path to the file used for testing the algorithms
+Type "python3 main.py 'training_dir_1' 'training_dir_2' 'training_dir_3' 'testing_dir'" (Note: The single quotes are optional)
+Where each 'training_dir' represents a relative path to a directory used for training the algorithms and 'testing_dir' represents a relative path to the directory used for testing the algorithms
 
 If you mess up on the command line input, the program will display a help message
