@@ -12,7 +12,7 @@ def write_final_results_to_file(strategy, test_results, mode):
     final_results = open('final_results.txt', mode)
     for key in test_results:
         final_results.write('{}, {}, {}\n'.format(strategy, key, test_results[key]))
-    final_results.write('\n')
+    final_results.write('\n\n')
     final_results.close()
 
 
@@ -24,7 +24,8 @@ def display_help():
 
 
 def main():
-    if len(sys.argv) != 5:
+    if len(sys.argv) < 5:
+        print('You have entered in too few arguments!\n')
         display_help()
         sys.exit()
 
@@ -44,21 +45,18 @@ def main():
         elif arg.endswith('TEST'):
             test_results = parse_documents_from_directory(arg)
         else:
-            print('One or more of the directories you provided is not useful for training or testing')
+            print('One or more of the directories you provided is not useful for training or testing\n')
             display_help
             sys.exit()
 
-    # print('{}\n'.format(normalized_DR))
-    # print('{}\n'.format(normalized_DT))
-    # print('{}\n'.format(normalized_L))
 
-    # expected = classify_with_intelligrep(test_results)
-    # test_intelligrep(actual, expected)
-    # write_final_results_to_file('I', expected, 'w')
+    expected = classify_with_intelligrep(test_results)
+    test_strategy('intelli-grep', actual, expected)
+    write_final_results_to_file('I', expected, 'w')
 
-    # training_set = train_tf_idf(normalized_DR, normalized_DT, normalized_L)
-    # expected = classify_with_tf_idf(training_set)
-    # write_final_results_to_file('T', expected, 'a')
+    expected = train_tf_idf(normalized_DR, normalized_DT, normalized_L, test_results)
+    test_strategy('if-idf', expected, actual)
+    write_final_results_to_file('T', expected, 'a')
 
 
 if __name__ == '__main__':
