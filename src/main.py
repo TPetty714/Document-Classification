@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
 import sys
-
+import datetime
+from strategies import *
 from strategies import *
 from parser import *
 from test import *
