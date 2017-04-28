@@ -58,6 +58,61 @@ def main():
     test_strategy('if-idf', expected, actual)
     write_final_results_to_file('T', expected, 'a')
 
+#     Perceptron
+    print('Parsing for perceptrons')
+    DR = parse_documents_from_directory(sys.argv[1])
+    DRW = perceptron.wordBag(DR)
+    DRF = perceptron.featureSet(DR)
+
+    DT = parse_documents_from_directory(sys.argv[2])
+    DTW = perceptron.wordBag(DT)
+    DTF = perceptron.featureSet(DT)
+
+    L = parse_documents_from_directory(sys.argv[3])
+    LW = perceptron.wordBag(L)
+    LF = perceptron.featureSet(L)
+
+    test = parse_documents_from_directory(sys.argv[4])
+    testW = perceptron.wordBag(test)
+
+    Training = perceptron.setCombiner(DR, DT, L)
+    TrainingF = perceptron.Combiner(DRF, DTF, LF)
+    TrainingW = perceptron.Combiner(DRW, DTW, LW)
+    # print('Training')
+    print('0 Training perceptrons')
+    # resultsDR = perceptron.learning(Training, TrainingW, TrainingF, DR, 'DR')
+    # resultsDT = perceptron.learning(Training, TrainingW, TrainingF, DT, 'DT')
+    # resultsL = perceptron.learning(Training, TrainingW, TrainingF, L, 'L')
+    for i in range(100):
+        Training = perceptron.setCombiner(DR, DT, L)
+        TrainingF = perceptron.Combiner(DRF, DTF, LF)
+        TrainingW = perceptron.Combiner(DRW, DTW, LW)
+        print(str(i + 1) + ' Training perceptrons')
+        resultsDR = perceptron.learning(Training, TrainingW, TrainingF, DR, 'DR',
+                                        pickle.load(open('../data/weightsDR.p', 'rb')),
+                                        pickle.load(open('../data/biasDR.p', 'rb')))
+        resultsDT = perceptron.learning(Training, TrainingW, TrainingF, DT, 'DT',
+                                        pickle.load(open('../data/weightsDT.p', 'rb')),
+                                        pickle.load(open('../data/biasDT.p', 'rb')))
+        resultsL = perceptron.learning(Training, TrainingW, TrainingF, L, 'L',
+                                       pickle.load(open('../data/weightsL.p', 'rb')),
+                                       pickle.load(open('../data/biasL.p', 'rb')))
+        # perceptron.printWeights(pickle.load(open('../data/weightsDR.p', 'rb')))
+        # perceptron.learning(Training, TrainingW, DRF, DR, 'DR',pickle.load(open('../data/weights.p', 'rb')),pickle.load(open('../data/bias.p', 'rb')),pickle.load(open('../data/alpha.p', 'rb')))
+    print('Testing perceptrons')
+    DRVotes = perceptron.testing(test, testW, TrainingF, actual, 'DR', pickle.load(open('../data/weightsDR.p', 'rb')),
+                                 pickle.load(open('../data/biasDR.p', 'rb')))
+    DTVotes = perceptron.testing(test, testW, TrainingF, actual, 'DT', pickle.load(open('../data/weightsDT.p', 'rb')),
+                                 pickle.load(open('../data/biasDT.p', 'rb')))
+    LVotes = perceptron.testing(test, testW, TrainingF, actual, 'L', pickle.load(open('../data/weightsL.p', 'rb')),
+                                pickle.load(open('../data/biasL.p', 'rb')))
+    # print('Calculating votes')
+    votes = perceptron.voteTally(DRVotes, DTVotes, LVotes, test, actual)
+    test_strategy('perceptron', votes, expected)
+    write_final_results_to_file('P', votes, 'a')
+
+
+
 
 if __name__ == '__main__':
     main()

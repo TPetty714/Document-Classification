@@ -146,3 +146,290 @@ def train_tf_idf(normalized_DR, normalized_DT, normalized_L, test_results):
 
     return classify_with_tf_idf(normalized_relative_DR_frequencies, normalized_relative_DT_frequencies, normalized_relative_L_frequencies, test_results)
 
+class perceptron:
+    def wordBag(documents):
+        wordBags = {}
+
+        documentWordCount = {}
+        contents = {}
+        for document in documents:
+            documentWordCount[document] = 0
+            # print('++++++++++++' + document + '++++++++++++')s
+            wordBag = {}
+            for word in documents[document].split():
+                documentWordCount[document] += 1
+                if word in wordBag.keys():
+                    wordBag[word] += 1
+                else:
+                    wordBag[word] = 1
+            for word in wordBag.keys():
+                # print(word)
+                # print('wordBag: ', wordBag[word])
+                wordBag[word] = wordBag[word]/documentWordCount[document]
+                wordBags[document] = wordBag
+                # print('wordBag/totalcount: ', wordBag[word])
+                # print(word + ': ' + str(wordBag[word])            wordBags[document] = wordBag
+        return wordBags
+
+    def featureSet(documents):
+        wordList = {}
+        totalWordCount = 0
+        feature = {}
+        featureSet = list()
+        for document in documents:
+            for word in documents[document].split():
+                totalWordCount += 1
+                if word in wordList.keys():
+                    wordList[word] += 1
+                else:
+                    wordList[word] = 1
+                # print(word + ':' + str(wordBag[word]))
+        for words in wordList:
+            featureSet.append((wordList[words], words))
+        # Sorts featureSet and takes top 20 words
+        featureSet.sort(reverse=True)
+        for i in range (20):
+            feature[featureSet[i][1]] = featureSet[i][0]/totalWordCount
+            # print(str(featureSet[i]))
+        # # print('Total Word Count = ',str(totalWordCount))
+        # return feature
+        return feature
+
+    def setCombiner(DR, DT, L):
+        feature = {}
+        filesFromSets = 40
+        DRL = list(DR.keys())
+        DTL = list(DT.keys())
+        LL = list(L.keys())
+
+        random.shuffle(DRL)
+        random.shuffle(DTL)
+        random.shuffle(LL)
+
+        for i in range(len(DRL)):
+            # print(DR[word])
+            feature[DRL[i]] = DR[DRL[i]]
+        for i in range(len(DTL)):
+            # print(DT[word])
+            feature[DTL[i]] = DT[DTL[i]]
+        for i in range(len(LL)):
+            # print(L[word])
+            feature[LL[i]] = L[LL[i]]
+        return feature
+
+    def Combiner(DR,DT,L):
+        feature = {}
+        DRL = DR.keys()
+        DTL = DT.keys()
+        LL = L.keys()
+
+        for word in DR.keys():
+            # print(DR[word])
+            feature[word] = DR[word]
+        for word in DT.keys():
+            # print(DT[word])
+            feature[word] = DT[word]
+        for word in L.keys():
+            # print(L[word])
+            feature[word] = L[word]
+        return feature
+
+
+    def Combiner(DR,DT,L):
+        feature = {}
+        for word in DR.keys():
+            # print(DR[word])
+            feature[word] = DR[word]
+        for word in DT.keys():
+            # print(DT[word])
+            feature[word] = DT[word]
+        for word in L.keys():
+            # print(L[word])
+            feature[word] = L[word]
+        return feature
+
+    def printWeights(weight):
+        for document in weight.keys():
+            print(document + " weights: " + str(weight[document]))
+
+    def learning(documents, wordBags, featureSet, answers, expected, weight = {}, Bias = -0.5):
+        alpha = 0.11
+        globalError = 1
+        voteNum = {}
+        if weight == {}:
+            for word in featureSet.keys():
+                weight[word] = random.uniform(-1,1)
+        # print("Documents set size: " + str(len(documents)))
+        for i in range (100):
+            # print('Iteration number = ' + str(i))
+
+            # if globalError == 0:
+            #     pickle.dump(weight, open('../data/weights' + expected + '.p', 'wb'))
+            #     pickle.dump(Bias, open('../data/bias' + expected + '.p', 'wb'))
+            #     pickle.dump(alpha, open('../data/alpha' + expected + '.p', 'wb'))
+            #     return weight
+            # globalError = 0
+            alpha *= 0.99
+
+            docList = list(documents.keys())
+            dictCount = 0
+            random.shuffle(docList)
+            # print("Documents set size: " + str(len(documents)))
+            # print("DocList set size: " + str(len(docList)))
+            for document in docList:
+
+                # print("Documents set size: " + str(len(documents)))
+                dictCount += 1
+                # docList.remove(document)
+                # print(str(dictCount) + ': ' + document)
+                err = 1
+                while err != 0:
+                    Pc = 0
+                    # print('Word Count: ' + str(len(featureSet)) )
+                    for word in weight.keys():
+                        # sum from 0 to n (Wj*xj[e])
+                        if word in wordBags[document]:
+                            try:
+                                Pc += weight[word]*wordBags[document][word]
+                            except KeyError:
+                                print(word + ' not in lists')
+                    Pc += Bias
+                    # print('Iteration number = ' + str(i))
+                    # print('alpha: ' + str(alpha))
+                    # print('Learning Pc: ' + str(Pc))
+                    if Pc <= 0:
+                        voteNum[document] = 0
+                    else:
+                        voteNum[document] = 1
+                    # print('Learning vote: ' + str(voteNum[document]))
+                    if document in answers:
+                        err = 1 - voteNum[document]
+                        print('Vote err: ' + str(err) + ' = 1 - ' + str(voteNum[document]))
+                    else:
+                        err = 0 - voteNum[document]
+                        print('Vote err: ' + str(err) + ' = 0 - ' + str(voteNum[document]))
+                    if err != 0:
+                        for word in weight.keys():
+                            if word in wordBags[document]:
+                                try:
+                                    weight[word] = weight[word] + alpha*err*wordBags[document][word]
+                                except KeyError:
+                                    print(word + ' not in weights')
+                    # print('Bias: ' + str(Bias) + 'alpha: ' + str(alpha) + 'err: ' + str(err))
+                    Bias = Bias + alpha*err
+                # print('Weight: ', end = ' ')
+                # for wght in weight:
+                     # print(str(weight[wght]), end = ' ')
+                # print('\nBias: ' + str(Bias))
+        pickle.dump(weight, open('../data/weights' + expected + '.p', 'wb'))
+        pickle.dump(Bias, open('../data/bias' + expected + '.p', 'wb'))
+        # return (weight, Bias)
+
+    def testing(documents, wordBags, featureSet, answers, expected, weight = {}, Bias = -0.5):
+
+        success = 0
+        total = 0
+        voteNum = {}
+        # print("Documents set size: " + str(len(documents)))
+
+        docList = list(documents.keys())
+        random.shuffle(docList)
+        # print("Documents set size: " + str(len(documents)))
+        # print("DocList set size: " + str(len(docList)))
+        for document in docList:
+            # print(document)
+            Pc = 0
+            total += 1
+            # print("Documents set size: " + str(len(documents)))
+            # dictCount += 1
+            # docList.remove(document)
+            # print(str(dictCount) + ': ' + document)
+                # print('Word Count: ' + str(len(featureSet)) )
+            for word in weight.keys():
+                # sum from 0 to n (Wj*xj[e])
+                if word in wordBags[document]:
+                    try:
+                        Pc += weight[word]*wordBags[document][word]
+                        # print('Word weight: ' + str(weight[word]) + ' WordBag: ' + str(wordBags[document][word]))
+                    except KeyError:
+                        print(word + ' not in lists')
+            Pc += Bias
+            # print('Pc: ' + str(Pc))
+            if Pc <= 0:
+                vote = 'other'
+                voteNum[document] = 0
+            else:
+                vote = expected
+                voteNum[document] = 1
+            # print(expected + " vote " + str(voteNum[document]))
+        return voteNum
+
+    def voteTally(DRVotes, DTVotes, LVotes, test, actual):
+        total = 0
+        success = 0
+        votes = {}
+        for document in test:
+            # print(str(DRVotes[document]))
+            # print(str(DRVotes[document]))
+            # print(str(DRVotes[document]))
+            tieBreaker = 0
+            total += 1
+            # print(actual[document])
+            if DRVotes[document] == DTVotes[document]:
+                tieBreaker = random.uniform(0, 1)
+                if tieBreaker == 0:
+                    DRVotes[document] = 1
+                    DTVotes[document] = 0
+                    votes[document] = 'DR'
+                else:
+                    DRVotes[document] = 0
+                    DTVotes[document] = 1
+                    votes[document] = 'DT'
+            if DRVotes == LVotes:
+                tieBreaker = random.uniform(0, 1)
+                if tieBreaker == 0:
+                    DRVotes[document] = 1
+                    LVotes[document] = 0
+                    votes[document] = 'DR'
+                else:
+                    DRVotes[document] = 0
+                    LVotes[document] = 1
+                    votes[document] = 'L'
+            if DTVotes[document] == LVotes[document]:
+                tieBreaker = random.uniform(0, 1)
+                if tieBreaker == 0:
+                    DTVotes[document] = 1
+                    LVotes[document] = 0
+                    votes[document] = 'DT'
+                else:
+                    DTVotes[document] = 0
+                    LVotes[document] = 1
+                    votes[document] = 'L'
+            if DRVotes[document] == DTVotes[document] == LVotes[document]:
+                tieBreaker = random.uniform(0,2)
+                if tieBreaker == 0:
+                    DRVotes[document] = 1
+                    DTVotes[document] = 0
+                    LVotes[document] = 0
+                    votes[document] = 'DR'
+                if tieBreaker == 0:
+                    DRVotes[document] = 0
+                    DTVotes[document] = 1
+                    LVotes[document] = 0
+                    votes[document] = 'DT'
+                if tieBreaker == 0:
+                    DRVotes[document] = 0
+                    DTVotes[document] = 0
+                    LVotes[document] = 1
+                    votes[document] = 'L'
+            if actual[document] == 'DR':
+                if DRVotes[document] == 1 and DTVotes[document] == 0 and LVotes[document] == 0:
+                    success += 1
+            if actual[document] == 'DT':
+                if DRVotes[document] == 0 and DTVotes[document] == 1 and LVotes[document] == 0:
+                    success += 1
+            if actual[document] == 'L':
+                if DRVotes[document] == 0 and DTVotes[document] == 0 and LVotes[document] == 1:
+                    success += 1
+        # print('Result: ' + str(success/total))
+        return votes
