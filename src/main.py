@@ -35,7 +35,6 @@ def main():
     argv_iter = iter(sys.argv)
     next(argv_iter)
     for arg in argv_iter:
-        print(arg)
         if arg.endswith('DR'):
             normalized_DR = parse_documents_from_directory(arg)
         elif arg.endswith('DT'):
@@ -52,13 +51,13 @@ def main():
             sys.exit()
 
 
-    # expected = classify_with_intelligrep(test_results)
-    # test_strategy('intelli-grep', actual, expected)
-    # write_final_results_to_file('I', expected, 'w')
-    #
-    # expected = train_tf_idf(normalized_DR, normalized_DT, normalized_L, test_results)
-    # test_strategy('if-idf', expected, actual)
-    # write_final_results_to_file('T', expected, 'a')
+    expected = classify_with_intelligrep(test_results)
+    test_strategy('intelli-grep', actual, expected)
+    write_final_results_to_file('I', expected, 'w')
+
+    expected = train_tf_idf(normalized_DR, normalized_DT, normalized_L, test_results)
+    test_strategy('if-idf', expected, actual)
+    write_final_results_to_file('T', expected, 'a')
 
 #     Perceptron
 #     print('Parsing for perceptrons')
@@ -76,7 +75,7 @@ def main():
     except FileNotFoundError or EOFError:
         resultsL = ({}, -0.5)
 
-    for i in range(10):
+    for i in range(1):
         Training = perceptron.setCombiner(normalized_DR, normalized_DT, normalized_L)
         DRF = perceptron.featureSet(normalized_DR)
         DTF = perceptron.featureSet(normalized_DT)
@@ -125,9 +124,9 @@ def main():
         # print('Calculating votes')
         votes = perceptron.voteTally(DRVotes, DTVotes, LVotes)
 
-        perceptron.checkVotes(votes, actual)
-        # test_strategy('perceptron', votes, actual)
-        # write_final_results_to_file('P', votes, 'a')
+        # perceptron.checkVotes(votes, actual)
+        test_strategy('perceptron', votes, actual)
+        write_final_results_to_file('P', votes, 'a')
 
 
 
