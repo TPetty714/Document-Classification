@@ -5,6 +5,7 @@ import sys
 from strategies import *
 from parser import *
 from test import *
+from naiveBayes import *
 
 
 def write_final_results_to_file(strategy, test_results, mode):
@@ -57,6 +58,9 @@ def main():
     expected = train_tf_idf(normalized_DR, normalized_DT, normalized_L, test_results)
     test_strategy('if-idf', expected, actual)
     write_final_results_to_file('T', expected, 'a')
+    
+    expected = train_naive(normalized_DR, normalized_DT, normalized_L, test_results)
+    
 
 
 if __name__ == '__main__':

@@ -1,22 +1,6 @@
 import os
 import re
 
-
-def create_bag_of_words(document):
-    """This function takes a preprocessed document as an argument and proceeds to create a dictionary, mapping each term to its frequency in the document. This is only an example of what you can use for implementing an initial strategy. It returns the dictionary previously mentioned."""
-    document = document.split()
-
-    tokens = {}
-
-    for word in document:
-        if word not in tokens:
-            tokens[word] = 1
-        else:
-            tokens[word] += 1
-
-    return tokens
-
-
 def preprocess(document):
     """This function converts non-alphabetic characters to whitespace, lowercases all letters, and collapses all subsequent whitespace down to a single space. It returns a string of the preprocessed document"""
     document = re.sub(r'\W+', ' ', document)
